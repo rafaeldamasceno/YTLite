@@ -189,3 +189,10 @@ jobs:
         run: |
           cyan -i youtube.ipa -o YouTubePlus_${{ inputs.tweak_version }}_Tweaks.ipa \
             -uwf ytplus.deb OpenYoutubeSafariExtension.appex youpip.deb ytuhd.deb ryd.deb ygs.deb ytvo.deb yq.deb
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: YouTubePlus_${{ inputs.tweak_version }}_Tweaks.ipa
+          path: YouTubePlus_${{ inputs.tweak_version }}_Tweaks.ipa
+          if-no-files-found: error
