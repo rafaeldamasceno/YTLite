@@ -127,6 +127,16 @@ jobs:
           cd ${{ github.workspace }}
           git clone --quiet --depth=1 https://github.com/PoomSmart/YouGroupSettings.git
 
+      - name: Clone YTVideoOverlay
+        run: |
+          cd ${{ github.workspace }}
+          git clone --quiet --depth=1 https://github.com/PoomSmart/YTVideoOverlay.git
+
+      - name: Clone YouQuality
+        run: |
+          cd ${{ github.workspace }}
+          git clone --quiet --depth=1 https://github.com/PoomSmart/YouQuality.git
+
       - name: Build YouPiP
         run: |
           cd ${{ github.workspace }}/YouPiP
@@ -159,15 +169,23 @@ jobs:
         env:
           THEOS: ${{ github.workspace }}/theos
 
+      - name: Build YTVideoOverlay
+        run: |
+          cd ${{ github.workspace }}/YTVideoOverlay
+          make clean package DEBUG=0 FINALPACKAGE=1
+          mv packages/*.deb ${{ github.workspace }}/ytvo.deb
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
+      - name: Build YouQuality
+        run: |
+          cd ${{ github.workspace }}/YouQuality
+          make clean package DEBUG=0 FINALPACKAGE=1
+          mv packages/*.deb ${{ github.workspace }}/yq.deb
+        env:
+          THEOS: ${{ github.workspace }}/theos
+
       - name: Inject tweaks into IPA
         run: |
           cyan -i youtube.ipa -o YouTubePlus_${{ inputs.tweak_version }}_Tweaks.ipa \
-            -uwf ytplus.deb OpenYoutubeSafariExtension.appex youpip.deb ytuhd.deb ryd.deb ygs.deb
-
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v2.0.1
-        with:
-          tag_name: v${{ github.run_number }}
-          name: YouTubePlus v${{ inputs.tweak_version }} + Tweaks (${{ github.run_number }})
-          files: YouTubePlus_${{ inputs.tweak_version }}_Tweaks.ipa
-          draft: true
+            -uwf ytplus.deb OpenYoutubeSafariExtension.appex youpip.deb ytuhd.deb ryd.deb ygs.deb ytvo.deb yq.deb
